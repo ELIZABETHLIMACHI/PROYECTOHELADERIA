@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Evaluación Integral de Proyectos</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 32px;
+      background: radial-gradient(circle at top left, #22c55e33, #0f172a 50%);
+      border-bottom: 1px solid #1f2937;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #22c55e, #6366f1);
+      color: white;
+      font-size: 1.1rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+    .nav-links a:hover {
+      color: #e5e7eb;
+    }
+
+    /* LAYOUT GENERAL */
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 40px 16px;
+    }
+
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .hero-title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+    .hero-badge span {
+      font-size: 0.9rem;
+    }
+    .hero-text {
+      font-size: 0.95rem;
+      color: #9ca3af;
+      max-width: 540px;
+    }
+    .hero-tags {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      color: #9ca3af;
+    }
+    .hero-image-card {
+      background: radial-gradient(circle at top, #22c55e22, #020617 60%);
+      border-radius: 20px;
+      padding: 12px;
+      border: 1px solid #1f2937;
+      box-shadow: 0 22px 45px -24px rgba(15,23,42,0.9);
+    }
+    .hero-image-inner {
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-image-inner img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+      filter: saturate(1.05);
+    }
+    .hero-image-label {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.75);
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-image-label span {
+      font-size: 0.9rem;
+    }
+
+    /* CARDS Y GRID */
+    .section-card {
+      background: radial-gradient(circle at top left, #22c55e11, #020617 55%);
+      border-radius: 18px;
+      padding: 16px 18px;
+      margin-bottom: 18px;
+      border: 1px solid #1f2937;
+      box-shadow: 0 18px 30px -24px rgba(15,23,42,0.9);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .section-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      background: #020617;
+      border: 1px solid #1f2937;
+    }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .section-sub {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 4px;
+      color: #9ca3af;
+    }
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+    input[type="number"]:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px #22c55e44;
+    }
+    input::placeholder {
+      color: #4b5563;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-right: 6px;
+      margin-top: 4px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #22c55e, #22c55e);
+      color: #020617;
+      box-shadow: 0 10px 25px -10px rgba(34,197,94,0.8);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px -12px rgba(34,197,94,0.9);
+    }
+    .btn-secondary {
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+    }
+    .btn-secondary:hover {
+      background: #020617;
+      border-color: #4b5563;
+      transform: translateY(-1px);
+    }
+    .btn-danger {
+      background: #b91c1c;
+      color: #f9fafb;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 0.8rem;
+    }
+    th, td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #1f2937;
+      text-align: right;
+    }
+    th {
+      background: #020617;
+      font-weight: 600;
+      color: #9ca3af;
+    }
+    tbody tr:nth-child(even) {
+      background: #020617;
+    }
+    td input {
+      text-align: right;
+      margin-bottom: 0;
+      padding: 4px 6px;
+      font-size: 0.75rem;
+    }
+    .neto-cell {
+      font-variant-numeric: tabular-nums;
+      color: #e5e7eb;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 260px;
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      background: #020617;
+    }
+
+    .result-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-right: 8px;
+      border: 1px solid transparent;
+    }
+    .tag-success {
+      background: #022c22;
+      color: #bbf7d0;
+      border-color: #22c55e55;
+    }
+    .tag-danger {
+      background: #450a0a;
+      color: #fecaca;
+      border-color: #ef444455;
+    }
+    .tag-neutral {
+      background: #020617;
+      color: #9ca3af;
+      border-color: #374151;
+    }
+
+    .indicator-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .indicator-card {
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: #020617;
+      border: 1px solid #1f2937;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .indicator-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+    .indicator-chip {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid #374151;
+      color: #9ca3af;
+    }
+    .indicator-value {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .explanation {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #d1d5db;
+    }
+    .explanation ul {
+      margin: 6px 0 0 18px;
+      padding: 0;
+    }
+    .explanation li {
+      margin-bottom: 4px;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    canvas {
+      max-width: 100%;
+    }
+
+    .footer-note {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .navbar {
+        padding-inline: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">💡</div>
+      <span>Evaluación de Proyectos</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#datos">Datos</a>
+      <a href="#flujos">Flujos</a>
+      <a href="#resultados">Indicadores</a>
+      <a href="#sensibilidad">Sensibilidad</a>
+      <a href="#graficas">Gráficas</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <!-- HERO -->
+    <section class="hero">
+      <div>
+        <div class="hero-badge">
+          <span>🚀</span>
+          <span>Simulador para preparación y evaluación de proyectos</span>
+        </div>
+        <h1 class="hero-title">
+          Analiza la rentabilidad de tu emprendimiento con indicadores profesionales
+        </h1>
+        <p class="hero-text">
+          Ingresa los costos, ingresos y flujos de caja de tu proyecto. El sistema calcula automáticamente
+          los principales indicadores financieros (VAN, TIR, B/C, Payback, Payback descontado, BAE, etc.)
+          y te indica si el proyecto es <strong>rentable</strong> o <strong>no rentable</strong>.
+        </p>
+        <div class="hero-tags">
+          <span class="chip">💼 Inversión inicial</span>
+          <span class="chip">📊 VAN &amp; TIR</span>
+          <span class="chip">💰 Relación B/C</span>
+          <span class="chip">⏱️ Payback simple y descontado</span>
+        </div>
+      </div>
+      <div class="hero-image-card">
+        <div class="hero-image-inner">
+          <img src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg" alt="Equipo de emprendedores analizando un proyecto" />
+          <div class="hero-image-label">
+            <span>📈</span>
+            <span>Emprendimientos y análisis financiero</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATOS DEL PROYECTO -->
+    <section id="datos" class="section-card">
+      <div class="section-header">
+        <div class="section-icon">💼</div>
+        <div>
+          <div class="section-title">Datos del proyecto</div>
+          <div class="section-sub">
+            Define el nombre del proyecto, la inversión inicial, la tasa de descuento y el horizonte de evaluación.
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="projectName">Nombre del proyecto</label>
+          <input type="text" id="projectName" placeholder="Ej: Heladería 'El Rincón del Sabor'" />
+        </div>
+        <div>
+          <label for="initialInvestment">Inversión inicial (Año 0) [Bs]</label>
+          <input type="number" id="initialInvestment" value="80000" step="0.01" />
+        </div>
+        <div>
+          <label for="discountRate">Tasa de descuento anual [%]</label>
+          <input type="number" id="discountRate" value="10" step="0.1" />
+        </div>
+        <div>
+          <label for="yearsCount">Número de años de evaluación</label>
+          <input type="number" id="yearsCount" value="5" min="1" max="30" />
+        </div>
+      </div>
+      <button class="btn btn-secondary" id="btnSetYears">🔁 Actualizar años</button>
+    </section>
+
+    <!-- FLUJOS DE CAJA -->
+    <section id="flujos" class="section-card">
+      <div class="section-header">
+        <div class="section-icon">📊</div>
+        <div>
+          <div class="section-title">Flujos de caja del proyecto</div>
+          <div class="section-sub">
+            Ingrese los <strong>ingresos</strong> y <strong>costos/egresos</strong> para cada año. El flujo neto
+            se calcula automáticamente.
+          </div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:center;">Año</th>
+              <th>Ingresos [Bs]</th>
+              <th>Costos / Egresos [Bs]</th>
+              <th>Flujo Neto [Bs]</th>
+            </tr>
+          </thead>
+          <tbody id="cashFlowBody">
+            <!-- Filas generadas por JS -->
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:8px;">
+        <button class="btn btn-secondary" id="btnAddYear">➕ Agregar año</button>
+        <button class="btn btn-danger" id="btnRemoveYear">➖ Quitar último año</button>
+      </div>
+    </section>
+
+    <!-- BOTÓN DE CÁLCULO -->
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-icon">⚙️</div>
+        <div>
+          <div class="section-title">Procesar indicadores</div>
+          <div class="section-sub">
+            Al presionar el botón se recalculan todos los indicadores con los datos ingresados.
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btnCalculate">
+        🧮 Calcular indicadores
+      </button>
+      <span id="errorMsg" style="color:#fecaca; font-size:0.8rem; margin-left:10px;"></span>
+    </section>
+
+    <!-- RESULTADOS E INDICADORES -->
+    <section id="resultados" class="section-card">
+      <div class="section-header">
+        <div class="section-icon">💰</div>
+        <div>
+          <div class="section-title">Resultados e indicadores financieros</div>
+          <div class="section-sub">
+            Evaluación completa de la rentabilidad del proyecto con criterios clásicos de evaluación.
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 10px;">
+        <span id="classificationTag" class="result-tag tag-neutral">
+          ⏳ Sin calcular
+        </span>
+        <span id="projectTitleShown" style="font-weight:600;"></span>
+      </div>
+
+      <!-- Indicadores principales -->
+      <div class="indicator-grid">
+        <div class="indicator-card">
+          <div class="indicator-top">
+            <span>VAN (Valor Actual Neto)</span>
+            <span class="indicator-chip">Rentabilidad global</span>
+          </div>
+          <div class="indicator-value" id="npvResult">-</div>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-top">
+            <span>TIR (Tasa Interna de Retorno)</span>
+            <span class="indicator-chip">Retorno (%)</span>
+          </div>
+          <div class="indicator-value" id="irrResult">-</div>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-top">
+            <span>Relación Beneficio / Costo</span>
+            <span class="indicator-chip">B/C</span>
+          </div>
+          <div class="indicator-value" id="bcResult">-</div>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-top">
+            <span>Periodo de recuperación</span>
+            <span class="indicator-chip">Payback simple</span>
+          </div>
+          <div class="indicator-value" id="paybackResult">-</div>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-top">
+            <span>Payback descontado</span>
+            <span class="indicator-chip">Con tasa r</span>
+          </div>
+          <div class="indicator-value" id="discountedPaybackResult">-</div>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-top">
+            <span>Valor Actual de Beneficios</span>
+            <span class="indicator-chip">VAB</span>
+          </div>
+          <div class="indicator-value" id="pvBenefitsResult">-</div>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-top">
+            <span>Valor Actual de Costos</span>
+            <span class="indicator-chip">VAC</span>
+          </div>
+          <div class="indicator-value" id="pvCostsResult">-</div>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-top">
+            <span>Índice de Rentabilidad</span>
+            <span class="indicator-chip">IR = VAN / I₀</span>
+          </div>
+          <div class="indicator-value" id="piResult">-</div>
+        </div>
+        <div class="indicator-card">
+          <div class="indicator-top">
+            <span>Beneficio Anual Equivalente</span>
+            <span class="indicator-chip">BAE</span>
+          </div>
+          <div class="indicator-value" id="eaaResult">-</div>
+        </div>
+      </div>
+
+      <h3 style="margin:16px 0 6px 0; font-size:1rem;">Clasificación del proyecto</h3>
+      <p class="explanation" id="explanationResult">
+        Aún no se ha realizado el cálculo. Ingrese los datos y presione
+        <strong>Calcular indicadores</strong>.
+      </p>
+    </section>
+
+    <!-- SENSIBILIDAD (TABLA DE ESCENARIOS) -->
+    <section id="sensibilidad" class="section-card">
+      <div class="section-header">
+        <div class="section-icon">🌡️</div>
+        <div>
+          <div class="section-title">Análisis de sensibilidad por escenarios</div>
+          <div class="section-sub">
+            Se evalúa el VAN y la relación Beneficio/Costo bajo escenarios pesimista, neutro y optimista.
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left;">Escenario</th>
+              <th>VAN (Bs)</th>
+              <th>Relación B/C</th>
+              <th>Clasificación</th>
+            </tr>
+          </thead>
+          <tbody id="sensitivityBody">
+            <!-- Filas generadas con JS -->
+          </tbody>
+        </table>
+      </div>
+      <p class="footer-note" style="margin-top:6px;">
+        El escenario pesimista reduce las ventas y aumenta los costos; el optimista incrementa las ventas y mejora la eficiencia de costos.
+        El proyecto se considera rentable en un escenario si el VAN &gt; 0 y la relación B/C &gt; 1.
+      </p>
+    </section>
+
+    <!-- GRÁFICAS -->
+    <section id="graficas" class="section-card">
+      <div class="section-header">
+        <div class="section-icon">📈</div>
+        <div>
+          <div class="section-title">Gráficas del comportamiento de los flujos</div>
+          <div class="section-sub">
+            Visualice los flujos netos anuales y el flujo acumulado descontado para entender el comportamiento
+            del proyecto en el tiempo.
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div>
+          <h4 style="font-size:0.9rem; margin-bottom:4px;">Flujos de caja netos por año</h4>
+          <canvas id="cashFlowChart" height="220"></canvas>
+        </div>
+        <div>
+          <h4 style="font-size:0.9rem; margin-bottom:4px;">Flujo acumulado descontado</h4>
+          <canvas id="discountedChart" height="220"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card">
+      <div class="section-header">
+        <div class="section-icon">🎓</div>
+        <div>
+          <div class="section-title">Uso académico</div>
+          <div class="section-sub">
+            Herramienta para cursos de Preparación y Evaluación de Proyectos.
+          </div>
+        </div>
+      </div>
+      <p class="footer-note">
+        Este simulador está diseñado con fines académicos. Puede adaptar los textos, colores, imágenes y fórmulas
+        según la metodología utilizada por su docente (económica, financiera, social, etc.) e incorporar nuevos
+        indicadores si así se requiere.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    // --- Referencias a elementos ---
+    const cashFlowBody = document.getElementById("cashFlowBody");
+    const yearsCountInput = document.getElementById("yearsCount");
+    const initialInvestmentInput = document.getElementById("initialInvestment");
+    const discountRateInput = document.getElementById("discountRate");
+    const projectNameInput = document.getElementById("projectName");
+
+    const btnSetYears = document.getElementById("btnSetYears");
+    const btnAddYear = document.getElementById("btnAddYear");
+    const btnRemoveYear = document.getElementById("btnRemoveYear");
+    const btnCalculate = document.getElementById("btnCalculate");
+    const errorMsg = document.getElementById("errorMsg");
+
+    const classificationTag = document.getElementById("classificationTag");
+    const projectTitleShown = document.getElementById("projectTitleShown");
+
+    const npvResult = document.getElementById("npvResult");
+    const irrResult = document.getElementById("irrResult");
+    const bcResult = document.getElementById("bcResult");
+    const paybackResult = document.getElementById("paybackResult");
+    const discountedPaybackResult = document.getElementById("discountedPaybackResult");
+    const pvBenefitsResult = document.getElementById("pvBenefitsResult");
+    const pvCostsResult = document.getElementById("pvCostsResult");
+    const piResult = document.getElementById("piResult");
+    const eaaResult = document.getElementById("eaaResult");
+    const explanationResult = document.getElementById("explanationResult");
+
+    const sensitivityBody = document.getElementById("sensitivityBody");
+
+    let flowsData = []; // años >= 1
+    let cashFlowChart = null;
+    let discountedChart = null;
+
+    const nf = new Intl.NumberFormat("es-ES", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    function formatNumber(value) {
+      return nf.format(value || 0);
+    }
+
+    // Configuración de escenarios de sensibilidad
+    const SENS_SCENARIOS = [
+      { name: "Pesimista", incomeFactor: 0.8, costFactor: 1.1 },
+      { name: "Neutro", incomeFactor: 1.0, costFactor: 1.0 },
+      { name: "Optimista", incomeFactor: 1.2, costFactor: 0.95 }
+    ];
+
+    // Inicializar datos por defecto (proyecto rentable base)
+    function initData() {
+      const years = parseInt(yearsCountInput.value, 10) || 5;
+      flowsData = [];
+      for (let y = 1; y <= years; y++) {
+        const baseIncome = 180000 + (y - 1) * 20000;
+        const baseCost = 110000 + (y - 1) * 5000;
+        flowsData.push({
+          year: y,
+          income: baseIncome,
+          cost: baseCost
+        });
+      }
+      renderTable();
+    }
+
+    // Renderizar tabla de flujos
+    function renderTable() {
+      cashFlowBody.innerHTML = "";
+      const inv0 = parseFloat(initialInvestmentInput.value) || 0;
+
+      // Fila año 0 (inversión inicial)
+      const tr0 = document.createElement("tr");
+      tr0.innerHTML = `
+        <td style="text-align:center;">0</td>
+        <td>0,00</td>
+        <td>${formatNumber(inv0)}</td>
+        <td class="neto-cell">${formatNumber(-inv0)}</td>
+      `;
+      cashFlowBody.appendChild(tr0);
+
+      // Filas para años >= 1
+      flowsData.forEach((row, index) => {
+        const tr = document.createElement("tr");
+        tr.dataset.index = index;
+        tr.innerHTML = `
+          <td style="text-align:center;">${row.year}</td>
+          <td><input type="number" step="0.01" value="${row.income}" /></td>
+          <td><input type="number" step="0.01" value="${row.cost}" /></td>
+          <td class="neto-cell"></td>
+        `;
+        const inputs = tr.querySelectorAll("input");
+        const netCell = tr.querySelector(".neto-cell");
+
+        function updateRow() {
+          const inc = parseFloat(inputs[0].value) || 0;
+          const cost = parseFloat(inputs[1].value) || 0;
+          row.income = inc;
+          row.cost = cost;
+          netCell.textContent = formatNumber(inc - cost);
+        }
+
+        inputs[0].addEventListener("input", updateRow);
+        inputs[1].addEventListener("input", updateRow);
+        updateRow();
+
+        cashFlowBody.appendChild(tr);
+      });
+    }
+
+    function getFlows() {
+      const inv0 = parseFloat(initialInvestmentInput.value) || 0;
+      const flows = [];
+      flows.push(-inv0);
+      for (const row of flowsData) {
+        flows.push((row.income || 0) - (row.cost || 0));
+      }
+      return flows;
+    }
+
+    function getIncomesAndCosts() {
+      const inv0 = parseFloat(initialInvestmentInput.value) || 0;
+      const incomes = [0];
+      const costs = [inv0];
+      for (const row of flowsData) {
+        incomes.push(row.income || 0);
+        costs.push(row.cost || 0);
+      }
+      return { incomes, costs };
+    }
+
+    function computeNPV(rate, flows) {
+      let npv = 0;
+      flows.forEach((cf, t) => {
+        npv += cf / Math.pow(1 + rate, t);
+      });
+      return npv;
+    }
+
+    function computeIRR(flows) {
+      let low = -0.9;
+      let high = 5;
+      let npvLow = computeNPV(low, flows);
+      let npvHigh = computeNPV(high, flows);
+
+      if (npvLow * npvHigh > 0) {
+        return null;
+      }
+
+      let mid = 0;
+      for (let i = 0; i < 60; i++) {
+        mid = (low + high) / 2;
+        const npvMid = computeNPV(mid, flows);
+        if (Math.abs(npvMid) < 1e-6) {
+          break;
+        }
+        if (npvLow * npvMid < 0) {
+          high = mid;
+          npvHigh = npvMid;
+        } else {
+          low = mid;
+          npvLow = npvMid;
+        }
+      }
+      return mid;
+    }
+
+    function computePayback(flows) {
+      let cum = 0;
+      for (let t = 0; t < flows.length; t++) {
+        const prev = cum;
+        cum += flows[t];
+        if (cum >= 0) {
+          if (t === 0) return 0;
+          const frac = (0 - prev) / flows[t];
+          return (t - 1) + frac;
+        }
+      }
+      return null;
+    }
+
+    function computeDiscountedPayback(flows, r) {
+      let cum = 0;
+      for (let t = 0; t < flows.length; t++) {
+        const prev = cum;
+        const disc = flows[t] / Math.pow(1 + r, t);
+        cum += disc;
+        if (cum >= 0) {
+          if (t === 0) return 0;
+          const frac = (0 - prev) / disc;
+          return (t - 1) + frac;
+        }
+      }
+      return null;
+    }
+
+    function computePV(rate, series) {
+      let pv = 0;
+      series.forEach((val, t) => {
+        pv += val / Math.pow(1 + rate, t);
+      });
+      return pv;
+    }
+
+    function computeEAA(npv, r, n) {
+      if (r <= 0) return npv / n;
+      const factor = (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      return npv * factor;
+    }
+
+    // Calcula VAN y B/C de un escenario con factores sobre ingresos y costos
+    function computeScenario(incomes, costs, r, inv0, incomeFactor, costFactor) {
+      const scenIncomes = [0];
+      const scenCosts = [inv0];
+      for (let t = 1; t < incomes.length; t++) {
+        scenIncomes.push(incomes[t] * incomeFactor);
+        scenCosts.push(costs[t] * costFactor);
+      }
+      const flows = [-inv0];
+      for (let t = 1; t < scenIncomes.length; t++) {
+        flows.push(scenIncomes[t] - scenCosts[t]);
+      }
+      const npv = computeNPV(r, flows);
+      const pvB = computePV(r, scenIncomes);
+      const pvC = computePV(r, scenCosts);
+      const bc = pvC > 0 ? pvB / pvC : null;
+      return { npv, bc };
+    }
+
+    function renderSensitivityTable(rows) {
+      sensitivityBody.innerHTML = "";
+      rows.forEach(row => {
+        const tr = document.createElement("tr");
+        const clasif = (row.npv > 0 && row.bc != null && row.bc > 1) ? "Rentable" : "No rentable";
+        tr.innerHTML = `
+          <td style="text-align:left;">${row.name}</td>
+          <td>${formatNumber(row.npv)}</td>
+          <td>${row.bc != null ? formatNumber(row.bc) : "N/A"}</td>
+          <td>${clasif}</td>
+        `;
+        sensitivityBody.appendChild(tr);
+      });
+    }
+
+    function updateCharts(flows, r) {
+      const labels = flows.map((_, i) => "Año " + i);
+      const ctx1 = document.getElementById("cashFlowChart").getContext("2d");
+      const ctx2 = document.getElementById("discountedChart").getContext("2d");
+
+      const discCum = [];
+      let cum = 0;
+      flows.forEach((cf, t) => {
+        cum += cf / Math.pow(1 + r, t);
+        discCum.push(cum);
+      });
+
+      if (cashFlowChart) cashFlowChart.destroy();
+      if (discountedChart) discountedChart.destroy();
+
+      cashFlowChart = new Chart(ctx1, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Flujo neto",
+              data: flows,
+              backgroundColor: "rgba(34,197,94,0.7)",
+              borderColor: "rgba(34,197,94,1)",
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          plugins: {
+            legend: { labels: { color: "#e5e7eb" } }
+          },
+          scales: {
+            x: { ticks: { color: "#9ca3af" } },
+            y: { ticks: { color: "#9ca3af" } }
+          }
+        }
+      });
+
+      discountedChart = new Chart(ctx2, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Flujo acumulado descontado",
+              data: discCum,
+              borderColor: "rgba(96,165,250,1)",
+              backgroundColor: "rgba(96,165,250,0.2)",
+              borderWidth: 2,
+              tension: 0.2
+            }
+          ]
+        },
+        options: {
+          plugins: {
+            legend: { labels: { color: "#e5e7eb" } }
+          },
+          scales: {
+            x: { ticks: { color: "#9ca3af" } },
+            y: { ticks: { color: "#9ca3af" } }
+          }
+        }
+      });
+    }
+
+    // --- Eventos ---
+    btnSetYears.addEventListener("click", () => {
+      const years = parseInt(yearsCountInput.value, 10);
+      if (isNaN(years) || years < 1) {
+        errorMsg.textContent = "Ingrese un número de años válido (≥1).";
+        return;
+      }
+      errorMsg.textContent = "";
+      initData();
+    });
+
+    btnAddYear.addEventListener("click", () => {
+      let years = parseInt(yearsCountInput.value, 10) || flowsData.length;
+      years++;
+      yearsCountInput.value = years;
+      const lastYear = flowsData.length > 0 ? flowsData[flowsData.length - 1].year : 0;
+      const newYear = lastYear + 1;
+      const baseIncome = 180000 + (newYear - 1) * 20000;
+      const baseCost = 110000 + (newYear - 1) * 5000;
+      flowsData.push({ year: newYear, income: baseIncome, cost: baseCost });
+      renderTable();
+    });
+
+    btnRemoveYear.addEventListener("click", () => {
+      if (flowsData.length <= 1) return;
+      flowsData.pop();
+      yearsCountInput.value = flowsData.length;
+      renderTable();
+    });
+
+    btnCalculate.addEventListener("click", () => {
+      errorMsg.textContent = "";
+      const rPercent = parseFloat(discountRateInput.value);
+      if (isNaN(rPercent)) {
+        errorMsg.textContent = "Ingrese una tasa de descuento válida.";
+        return;
+      }
+      const r = rPercent / 100;
+      const flows = getFlows();
+      const { incomes, costs } = getIncomesAndCosts();
+      const inv0 = parseFloat(initialInvestmentInput.value) || 0;
+
+      const npv = computeNPV(r, flows);
+      const irr = computeIRR(flows);
+      const pvBenefits = computePV(r, incomes);
+      const pvCosts = computePV(r, costs);
+      const bc = pvCosts > 0 ? pvBenefits / pvCosts : null;
+      const pb = computePayback(flows);
+      const dpb = computeDiscountedPayback(flows, r);
+      const nYears = flows.length - 1;
+      const eaa = computeEAA(npv, r, nYears);
+      const pi = inv0 > 0 ? npv / inv0 : null;
+
+      npvResult.textContent = "Bs " + formatNumber(npv);
+      irrResult.textContent = irr != null ? formatNumber(irr * 100) + " %" : "N/A";
+      bcResult.textContent = bc != null ? formatNumber(bc) : "N/A";
+      paybackResult.textContent = pb != null ? formatNumber(pb) + " años" : "No recupera";
+      discountedPaybackResult.textContent = dpb != null ? formatNumber(dpb) + " años" : "No recupera";
+      pvBenefitsResult.textContent = "Bs " + formatNumber(pvBenefits);
+      pvCostsResult.textContent = "Bs " + formatNumber(pvCosts);
+      piResult.textContent = pi != null ? formatNumber(pi) : "N/A";
+      eaaResult.textContent = "Bs " + formatNumber(eaa);
+
+      // Clasificación global
+      classificationTag.classList.remove("tag-success", "tag-danger", "tag-neutral");
+      let explanation = "";
+      const tasaTexto = rPercent.toFixed(2).replace(".", ",") + " %";
+
+      if (npv > 0 && bc != null && bc > 1 && irr != null && irr * 100 > rPercent) {
+        classificationTag.classList.add("tag-success");
+        classificationTag.textContent = "✅ Proyecto rentable";
+        explanation =
+          "El proyecto es financieramente rentable. El VAN es positivo, la relación Beneficio/Costo es mayor que uno y la TIR supera la tasa de descuento (" +
+          tasaTexto +
+          "). Además, el periodo de recuperación es relativamente corto, lo que reduce el riesgo de la inversión.";
+      } else if (npv > 0) {
+        classificationTag.classList.add("tag-neutral");
+        classificationTag.textContent = "⚠️ Rentabilidad moderada";
+        explanation =
+          "El proyecto genera un VAN positivo, pero algunos indicadores (como la TIR o la relación B/C) no superan claramente los criterios de aceptación. Se recomienda analizar escenarios alternativos y ajustar costos o precios para mejorar la rentabilidad.";
+      } else {
+        classificationTag.classList.add("tag-danger");
+        classificationTag.textContent = "❌ Proyecto no rentable";
+        explanation =
+          "El proyecto no resulta rentable con los datos actuales, ya que el VAN es negativo o la relación B/C es menor que uno. Para que el proyecto sea atractivo, se requiere incrementar los ingresos, reducir costos o replantear la inversión inicial.";
+      }
+
+      const name = projectNameInput.value || "Proyecto de inversión";
+      projectTitleShown.textContent = "Evaluación del " + name;
+      explanationResult.textContent = explanation;
+
+      // Sensibilidad: calcular VAN y B/C por escenario
+      const scenRows = SENS_SCENARIOS.map(sc => {
+        const res = computeScenario(incomes, costs, r, inv0, sc.incomeFactor, sc.costFactor);
+        return { name: sc.name, npv: res.npv, bc: res.bc };
+      });
+      renderSensitivityTable(scenRows);
+
+      // Gráficas
+      updateCharts(flows, r);
+    });
+
+    // Inicializar
+    initData();
+  </script>
+</body>
+</html>
